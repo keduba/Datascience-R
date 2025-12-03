@@ -60,17 +60,21 @@ The correlation coefficient for star-data (-0.06296) and dino-data-(-0.06447185)
 
 ### Exercise 4
 
-Add code and narrative as needed.
-Note that two R chunks are given but they are not labeled.
-Use the convention from above to name them appropriately.
+```{r plot-circle, fig.height=3, fig.width=6}
+circle_data <- datasaurus_dozen %>%   
+  filter(dataset == "circle")
 
-```{r}
-
-```
-
-```{r}
+ggplot(data = circle_data, mapping = aes(x = x, y = y)) +
+  geom_point()
 
 ```
+
+```{r cor-circle}
+circle_data %>% 
+  summarize(r = cor(x, y))
+
+```
+The correlation coefficient for circle-data (-0.06834336) and dino-data-(-0.06447185) are not so far apart.
 
 ### Exercise 5
 
