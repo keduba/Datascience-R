@@ -144,14 +144,13 @@ outliers could be T&T observed earlier in the histogram.
 ### Exercise 6
 
 ``` r
-ggplot(data = plastic_waste, mapping = aes(x = plastic_waste_per_cap,
-                                           y = mismanaged_plastic_waste_per_cap,
+plastic_waste %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+ggplot(mapping = aes(x = mismanaged_plastic_waste_per_cap,
+                                           y = plastic_waste_per_cap,
                                            colour = continent)) +
   geom_point()
 ```
-
-    ## Warning: Removed 51 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](lab-02_files/figure-gfm/plastic-waste-mismanaged-continent-1.png)<!-- -->
 Europe has the smallest waste to mismanaged waste per capita ratio.
@@ -161,21 +160,20 @@ similar pattern as Africa.
 ### Exercise 7
 
 ``` r
-ggplot(plastic_waste, aes(x = plastic_waste_per_cap,
-                          y = total_pop,
-                          colour = continent)) +
+plastic_waste %>% 
+ filter(plastic_waste_per_cap < 3, total_pop < 5e+08) %>%
+ggplot(aes(x = total_pop,
+           y = plastic_waste_per_cap,
+           colour = continent)) +
   geom_point()
 ```
-
-    ## Warning: Removed 61 rows containing missing values or values outside the scale range
-    ## (`geom_point()`).
 
 ![](lab-02_files/figure-gfm/plastic-waste-population-total-1.png)<!-- -->
 
 ``` r
 # plastic waste per cap vs coastal population
-ggplot(plastic_waste, aes(plastic_waste_per_cap,
-                          coastal_pop,
+ggplot(plastic_waste, aes(x = coastal_pop,
+                          y = plastic_waste_per_cap,
                           colour = continent)) +
   geom_point()
 ```
@@ -184,11 +182,41 @@ ggplot(plastic_waste, aes(plastic_waste_per_cap,
     ## (`geom_point()`).
 
 ![](lab-02_files/figure-gfm/plastic-waste-population-coastal-1.png)<!-- -->
+It appears that there is a stronger linear relationship between coastal
+population and the plastic waste per capita than between the total
+population and the same variable. Though we see that the population of
+Asia contributes to this relationship more than in North America.
 
 ### Exercise 8
 
-Remove this text, and add your answer for Exercise 8 here.
-
 ``` r
-# insert code here
+plastic_waste %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+  mutate(coastal_pop_prop = coastal_pop/total_pop) %>% 
+  
+ggplot(plastic_waste, mapping = aes(x = coastal_pop_prop,
+                                    y = plastic_waste_per_cap,
+                                    )) +
+  geom_point(aes(colour = continent)) +
+  geom_smooth(method = "loess") +
+  labs(
+    title = "Plastic waste vs coastal population proportion",
+    subtitle = "by continent",
+    x = "Coastal population proportion (coastal/total population",
+    y = "Plastic waste per capita"
+  )
 ```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+    ## Warning: Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 10 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/recreate-viz-1.png)<!-- --> Interpretation:
+The loess smooth line follows an increase trend that isn’t exactly
+linear. There seems to be a proportional increase with the plastic waste
+per capita against the proportion of coastal residents to the total
+population.
