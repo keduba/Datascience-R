@@ -26,7 +26,7 @@ datasaurus_dozen %>%
 
 First let's plot the data in the dino dataset:
 
-```{r plot-dino, fig.height=3, fig.width=6}
+```{r plot-dino, fig.height=4, fig.width=6}
 dino_data <- datasaurus_dozen %>%
   filter(dataset == "dino")
 
@@ -43,7 +43,7 @@ dino_data %>%
 
 ### Exercise 3
 
-```{r plot-star, fig.height=3, fig.width=6}
+```{r plot-star, fig.height=4, fig.width=6}
 star_data <- datasaurus_dozen %>%   
 filter(dataset == "star") 
 
@@ -60,7 +60,7 @@ The correlation coefficient for star-data (-0.06296) and dino-data-(-0.06447185)
 
 ### Exercise 4
 
-```{r plot-circle, fig.height=3, fig.width=6}
+```{r plot-circle, fig.height=4, fig.width=6}
 circle_data <- datasaurus_dozen %>%   
   filter(dataset == "circle")
 
@@ -78,5 +78,17 @@ The correlation coefficient for circle-data (-0.06834336) and dino-data-(-0.0644
 
 ### Exercise 5
 
-Add code and narrative as needed.
-To add R chunks either type out the backticks, curly braces, and the letter `r` or use the Insert chunk button above, green C+.
+
+```{r plot-all-datasets, fig.height=7, fig.width=6}
+
+ggplot(datasaurus_dozen, aes(x = x, y = y, color = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 3) +
+  theme(legend.position = "none")
+
+```
+```{r all-coeffs}
+datasaurus_dozen %>% 
+  group_by(dataset) %>% 
+  summarize(r = cor(x, y))
+```
