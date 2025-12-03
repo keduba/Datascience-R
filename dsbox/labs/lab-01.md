@@ -117,3 +117,35 @@ dino-data-(-0.06447185) are not so far apart.
 Add code and narrative as needed. To add R chunks either type out the
 backticks, curly braces, and the letter `r` or use the Insert chunk
 button above, green C+.
+
+``` r
+ggplot(datasaurus_dozen, aes(x = x, y = y, color = dataset)) +
+  geom_point() +
+  facet_wrap(~ dataset, ncol = 3) +
+  theme(legend.position = "none")
+```
+
+![](lab-01_files/figure-gfm/plot-all-datasets-1.png)<!-- -->
+
+``` r
+datasaurus_dozen %>% 
+  group_by(dataset) %>% 
+  summarize(r = cor(x, y))
+```
+
+    ## # A tibble: 13 × 2
+    ##    dataset          r
+    ##    <chr>        <dbl>
+    ##  1 away       -0.0641
+    ##  2 bullseye   -0.0686
+    ##  3 circle     -0.0683
+    ##  4 dino       -0.0645
+    ##  5 dots       -0.0603
+    ##  6 h_lines    -0.0617
+    ##  7 high_lines -0.0685
+    ##  8 slant_down -0.0690
+    ##  9 slant_up   -0.0686
+    ## 10 star       -0.0630
+    ## 11 v_lines    -0.0694
+    ## 12 wide_lines -0.0666
+    ## 13 x_shape    -0.0656
