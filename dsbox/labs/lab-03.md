@@ -99,6 +99,25 @@ nobel_living_sci <- nobel_living %>%
 
 ### Exercise 3
 
+- a bar plot to see the relationship between prize category and country
+  at time of award.
+- facet by category.
+- horizontal bars
+
+``` r
+ggplot(data = nobel_living_sci, mapping = aes(y = country_us, 
+                                              fill = country_us)) +
+  geom_bar() +
+  facet_wrap(~ category) +
+  labs(
+    x = "Number of Laureates",
+    y = "Country at time of award",
+  ) +
+  guides(fill = "none")
+```
+
+![](lab-03_files/figure-gfm/country-bar-1.png)<!-- -->
+
 ### Exercise 4
 
 …
