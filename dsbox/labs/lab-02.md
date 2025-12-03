@@ -56,6 +56,41 @@ ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap)) +
 
 ![](lab-02_files/figure-gfm/plastic-waste-continent-1.png)<!-- -->
 
+``` r
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent)) +
+  geom_density()
+```
+
+    ## Warning: Removed 51 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](lab-02_files/figure-gfm/density-plot-1.png)<!-- -->
+
+``` r
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent,
+                                 fill = continent)) +
+  geom_density()
+```
+
+    ## Warning: Removed 51 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](lab-02_files/figure-gfm/density-plot-fill-1.png)<!-- -->
+
+``` r
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent,
+                                 fill = continent)) +
+  geom_density(alpha = 0.4)
+```
+
+    ## Warning: Removed 51 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](lab-02_files/figure-gfm/density-plot-alpha-1.png)<!-- -->
+
 ### Exercise 2
 
 ``` r
