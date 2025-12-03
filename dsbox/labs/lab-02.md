@@ -77,37 +77,53 @@ ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap,
     ## Warning: Removed 51 rows containing non-finite outside the scale range
     ## (`stat_density()`).
 
-![](lab-02_files/figure-gfm/density-plot-fill-1.png)<!-- -->
+![](lab-02_files/figure-gfm/density-plot-fill-1.png)<!-- --> \###
+Exercise 2
 
 ``` r
 ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
                                  color = continent,
-                                 fill = continent)) +
+                                 fill = continent
+                                )) +
   geom_density(alpha = 0.4)
 ```
 
     ## Warning: Removed 51 rows containing non-finite outside the scale range
     ## (`stat_density()`).
 
-![](lab-02_files/figure-gfm/density-plot-alpha-1.png)<!-- -->
-
-### Exercise 2
-
-``` r
-# insert code here
-```
+![](lab-02_files/figure-gfm/plastic-waste-density-alpha-1.png)<!-- -->
 
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 3 here.
+``` r
+ggplot(data = plastic_waste, 
+       mapping = aes(x = continent, 
+                     y = plastic_waste_per_cap)) +
+  geom_boxplot()
+```
 
-### Exercise 4
+    ## Warning: Removed 51 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
 
-Remove this text, and add your answer for Exercise 4 here.
+![](lab-02_files/figure-gfm/plastic-waste-boxplot-1.png)<!-- --> \###
+Exercise 4
+
+With the violin plot, the spread of the data per continent is more
+visible. This is not apparent with the box plots above. Although it’s
+not very clear the data outside the iqr in the violin plots compared to
+the box plots.
 
 ``` r
-# insert code here
+ggplot(data = plastic_waste, 
+       mapping = aes(x = continent, 
+                     y = plastic_waste_per_cap)) +
+  geom_violin()
 ```
+
+    ## Warning: Removed 51 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](lab-02_files/figure-gfm/plastic-waste-violin-1.png)<!-- -->
 
 ### Exercise 5
 
