@@ -202,7 +202,7 @@ ggplot(plastic_waste, mapping = aes(x = coastal_pop_prop,
   labs(
     title = "Plastic waste vs coastal population proportion",
     subtitle = "by continent",
-    x = "Coastal population proportion (coastal/total population",
+    x = "Coastal population proportion (coastal/total population)",
     y = "Plastic waste per capita"
   )
 ```
@@ -215,8 +215,37 @@ ggplot(plastic_waste, mapping = aes(x = coastal_pop_prop,
     ## Warning: Removed 10 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](lab-02_files/figure-gfm/recreate-viz-1.png)<!-- --> Interpretation:
-The loess smooth line follows an increase trend that isn’t exactly
-linear. There seems to be a proportional increase with the plastic waste
-per capita against the proportion of coastal residents to the total
-population.
+![](lab-02_files/figure-gfm/recreate-viz-1.png)<!-- -->
+
+Interpretation: The loess smooth line follows an increase trend that
+isn’t exactly linear. There seems to be a proportional increase with the
+plastic waste per capita against the proportion of coastal residents to
+the total population.
+
+``` r
+plastic_waste %>% 
+  mutate(coastal_total_prop = coastal_pop/total_pop) %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+  ggplot(mapping = aes(x = coastal_total_prop,
+                       y = plastic_waste_per_cap,
+                       colour = continent)) +
+  geom_point() +
+  geom_smooth(colour = "black") +
+  scale_colour_viridis_d() +
+  labs(
+    title = "Plastic waste vs coastal population proportion",
+    subtitle = "by continent",
+    x = "Coastal population proportion (coastal/total population)",
+    y = "Plastic waste per capita"
+  )
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 10 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 10 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
