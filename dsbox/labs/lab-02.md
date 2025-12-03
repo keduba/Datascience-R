@@ -127,31 +127,63 @@ ggplot(data = plastic_waste,
 
 ### Exercise 5
 
-Remove this text, and add your answer for Exercise 5 here.
-
 ``` r
-# insert code here
+ggplot(plastic_waste, mapping = aes(x = plastic_waste_per_cap, 
+                                    y = mismanaged_plastic_waste_per_cap)) +
+  geom_point()
 ```
+
+    ## Warning: Removed 51 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/plastic-waste-mismanaged-1.png)<!-- -->
+There seems to be a linear relationship between plastic waste per capita
+and mismanaged plastic waste per capita with a few outliers. One of the
+outliers could be T&T observed earlier in the histogram.
 
 ### Exercise 6
 
-Remove this text, and add your answer for Exercise 6 here.
-
 ``` r
-# insert code here
+ggplot(data = plastic_waste, mapping = aes(x = plastic_waste_per_cap,
+                                           y = mismanaged_plastic_waste_per_cap,
+                                           colour = continent)) +
+  geom_point()
 ```
+
+    ## Warning: Removed 51 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/plastic-waste-mismanaged-continent-1.png)<!-- -->
+Europe has the smallest waste to mismanaged waste per capita ratio.
+Africa and South America have similar associations. Oceania follows a
+similar pattern as Africa.
 
 ### Exercise 7
 
-Remove this text, and add your answer for Exercise 7 here.
-
 ``` r
-# insert code here
+ggplot(plastic_waste, aes(x = plastic_waste_per_cap,
+                          y = total_pop,
+                          colour = continent)) +
+  geom_point()
 ```
 
+    ## Warning: Removed 61 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/plastic-waste-population-total-1.png)<!-- -->
+
 ``` r
-# insert code here
+# plastic waste per cap vs coastal population
+ggplot(plastic_waste, aes(plastic_waste_per_cap,
+                          coastal_pop,
+                          colour = continent)) +
+  geom_point()
 ```
+
+    ## Warning: Removed 51 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](lab-02_files/figure-gfm/plastic-waste-population-coastal-1.png)<!-- -->
 
 ### Exercise 8
 
