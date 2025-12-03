@@ -114,10 +114,6 @@ dino-data-(-0.06447185) are not so far apart.
 
 ### Exercise 5
 
-Add code and narrative as needed. To add R chunks either type out the
-backticks, curly braces, and the letter `r` or use the Insert chunk
-button above, green C+.
-
 ``` r
 ggplot(datasaurus_dozen, aes(x = x, y = y, color = dataset)) +
   geom_point() +
