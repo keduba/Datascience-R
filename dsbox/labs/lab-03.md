@@ -161,4 +161,47 @@ than were immigrants.
 
 ### Exercise 6
 
-…
+- where were those immigrant laureates born?
+
+``` r
+nobel_living_sci %>% 
+  filter(country_us == "USA", born_country_us == "Other") %>% 
+  count(born_country) %>% 
+  arrange(desc(n))
+```
+
+    ## # A tibble: 21 × 2
+    ##    born_country       n
+    ##    <chr>          <int>
+    ##  1 Germany            7
+    ##  2 United Kingdom     7
+    ##  3 China              5
+    ##  4 Canada             4
+    ##  5 Japan              3
+    ##  6 Australia          2
+    ##  7 Israel             2
+    ##  8 Norway             2
+    ##  9 Austria            1
+    ## 10 Finland            1
+    ## # ℹ 11 more rows
+
+``` r
+nobel_living_sci %>% 
+  filter(country_us == "USA", born_country_us == "Other") %>% 
+  count(born_country, sort = TRUE)
+```
+
+    ## # A tibble: 21 × 2
+    ##    born_country       n
+    ##    <chr>          <int>
+    ##  1 Germany            7
+    ##  2 United Kingdom     7
+    ##  3 China              5
+    ##  4 Canada             4
+    ##  5 Japan              3
+    ##  6 Australia          2
+    ##  7 Israel             2
+    ##  8 Norway             2
+    ##  9 Austria            1
+    ## 10 Finland            1
+    ## # ℹ 11 more rows
