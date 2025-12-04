@@ -120,11 +120,44 @@ ggplot(data = nobel_living_sci, mapping = aes(y = country_us,
 
 ### Exercise 4
 
-…
+- Laureates born in the US vs other countries
+
+``` r
+nobel_living_sci <- nobel_living_sci %>% 
+  mutate(born_country_us = fct_other(born_country, "USA"))
+nobel_living_sci %>% 
+  filter(born_country_us == "USA") %>% 
+  count()
+```
+
+    ## # A tibble: 1 × 1
+    ##       n
+    ##   <int>
+    ## 1   105
+
+105 awardees were born in the US out of 228.
 
 ### Exercise 5
 
-…
+Those who won while in the USA and who were born in the USA.
+
+``` r
+ggplot(data = nobel_living_sci, mapping = aes(y = country_us, 
+                                              fill = born_country_us)) +
+  geom_bar() +
+  facet_wrap(~ category) +
+  labs(
+    x = "Number of Laureates",
+    y = "Country at time of award",
+    #color = "Country of birth"
+  ) +
+  guides(fill = guide_legend(title = "Birth country")) +
+  theme_minimal()
+```
+
+![](lab-03_files/figure-gfm/born-won-usa-1.png)<!-- --> It does appear
+that of the number of awardees in the USA, more were born in the USA
+than were immigrants.
 
 ### Exercise 6
 
