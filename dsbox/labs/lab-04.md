@@ -46,9 +46,15 @@ dim(states)
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 1 here. Add code
-chunks as needed. Don’t forget to label your code chunk. Do not use
-spaces in code chunk labels.
+1.  The dimensions of La Quinta is \[909 x 6\].
+2.  Each row represents the address of a La Quinta including its
+    geographical coordinates.
+3.  The columns or variables are address, city, state, zip, longitude,
+    latitude.
+
+``` r
+?laquinta
+```
 
 ### Exercise 3
 
