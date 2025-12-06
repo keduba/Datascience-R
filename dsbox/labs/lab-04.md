@@ -91,30 +91,21 @@ dennys %>%
 ### Exercise 6
 
 ``` r
-dennys %>% 
+dennys <- dennys %>% 
   mutate(country = "United States")
 ```
 
-    ## # A tibble: 1,643 × 7
-    ##    address                        city    state zip   longitude latitude country
-    ##    <chr>                          <chr>   <chr> <chr>     <dbl>    <dbl> <chr>  
-    ##  1 2900 Denali                    Anchor… AK    99503    -150.      61.2 United…
-    ##  2 3850 Debarr Road               Anchor… AK    99508    -150.      61.2 United…
-    ##  3 1929 Airport Way               Fairba… AK    99701    -148.      64.8 United…
-    ##  4 230 Connector Dr               Auburn  AL    36849     -85.5     32.6 United…
-    ##  5 224 Daniel Payne Drive N       Birmin… AL    35207     -86.8     33.6 United…
-    ##  6 900 16th St S, Commons on Gree Birmin… AL    35294     -86.8     33.5 United…
-    ##  7 5931 Alabama Highway, #157     Cullman AL    35056     -86.9     34.2 United…
-    ##  8 2190 Ross Clark Circle         Dothan  AL    36301     -85.4     31.2 United…
-    ##  9 900 Tyson Rd                   Hope H… AL    36043     -86.4     32.2 United…
-    ## 10 4874 University Drive          Huntsv… AL    35816     -86.7     34.7 United…
-    ## # ℹ 1,633 more rows
+### Exercise 7
 
 La Quinta is also found in Canada, Mexico, China, Colombia, Ecuador,
 United Arab Emirates, Georgia, Turkiye and New Zealand.
 
+### Exercise 8
+
+What countries are La Quinta’s offices?
+
 ``` r
-laquinta %>% 
+laquinta <- laquinta %>% 
   mutate(country = case_when(
     state %in% state.abb ~ "United States",
     state %in% c("ON", "BC") ~ "Canada",
@@ -124,17 +115,171 @@ laquinta %>%
   )
 ```
 
-    ## # A tibble: 909 × 7
-    ##    address                          city  state zip   longitude latitude country
-    ##    <chr>                            <chr> <chr> <chr>     <dbl>    <dbl> <chr>  
-    ##  1 793 W. Bel Air Avenue            "\nA… MD    21001     -76.2     39.5 United…
-    ##  2 3018 CatClaw Dr                  "\nA… TX    79606     -99.8     32.4 United…
-    ##  3 3501 West Lake Rd                "\nA… TX    79601     -99.7     32.5 United…
-    ##  4 184 North Point Way              "\nA… GA    30102     -84.7     34.1 United…
-    ##  5 2828 East Arlington Street       "\nA… OK    74820     -96.6     34.8 United…
-    ##  6 14925 Landmark Blvd              "\nA… TX    75254     -96.8     33.0 United…
-    ##  7 Carretera Panamericana Sur KM 12 "\nA… AG    20345    -102.      21.8 Mexico 
-    ##  8 909 East Frontage Rd             "\nA… TX    78516     -98.1     26.2 United…
-    ##  9 2116 Yale Blvd Southeast         "\nA… NM    87106    -107.      35.1 United…
-    ## 10 7439 Pan American Fwy Northeast  "\nA… NM    87109    -107.      35.2 United…
-    ## # ℹ 899 more rows
+To work with only La Quinta USA
+
+``` r
+laquinta <- laquinta %>% 
+  filter(country == "United States")
+```
+
+### Exercise 9
+
+``` r
+state_freq <- dennys %>% 
+  count(state, sort = TRUE)
+```
+
+The biggest state is CA, 403 and the least state is DE, 1.
+
+``` r
+laquinta %>% 
+  count(state, sort = TRUE) %>% 
+  head(5)
+```
+
+    ## # A tibble: 5 × 2
+    ##   state     n
+    ##   <chr> <int>
+    ## 1 TX      237
+    ## 2 FL       74
+    ## 3 CA       56
+    ## 4 GA       41
+    ## 5 TN       30
+
+``` r
+head(state_freq)
+```
+
+    ## # A tibble: 6 × 2
+    ##   state     n
+    ##   <chr> <int>
+    ## 1 CA      403
+    ## 2 TX      200
+    ## 3 FL      140
+    ## 4 AZ       83
+    ## 5 IL       56
+    ## 6 NY       56
+
+``` r
+laquinta %>% 
+  count(state, sort = TRUE) %>% 
+  tail(10)
+```
+
+    ## # A tibble: 10 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 IA        4
+    ##  2 MI        4
+    ##  3 WV        3
+    ##  4 WY        3
+    ##  5 AK        2
+    ##  6 NH        2
+    ##  7 RI        2
+    ##  8 SD        2
+    ##  9 VT        2
+    ## 10 ME        1
+
+``` r
+tail(state_freq, 10)
+```
+
+    ## # A tibble: 10 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 ND        4
+    ##  2 WY        4
+    ##  3 AK        3
+    ##  4 IA        3
+    ##  5 NH        3
+    ##  6 SD        3
+    ##  7 WV        3
+    ##  8 DC        2
+    ##  9 VT        2
+    ## 10 DE        1
+
+### Exercise 10
+
+``` r
+dennys %>% 
+  count(state) %>% 
+  inner_join(states, by = c("state" = "abbreviation")) %>% 
+  mutate(density = n/area) %>% 
+  arrange(desc(density))
+```
+
+    ## # A tibble: 51 × 5
+    ##    state     n name                     area  density
+    ##    <chr> <int> <chr>                   <dbl>    <dbl>
+    ##  1 DC        2 District of Columbia     68.3 0.0293  
+    ##  2 RI        5 Rhode Island           1545.  0.00324 
+    ##  3 CA      403 California           163695.  0.00246 
+    ##  4 CT       12 Connecticut            5543.  0.00216 
+    ##  5 FL      140 Florida               65758.  0.00213 
+    ##  6 MD       26 Maryland              12406.  0.00210 
+    ##  7 NJ       10 New Jersey             8723.  0.00115 
+    ##  8 NY       56 New York              54555.  0.00103 
+    ##  9 IN       37 Indiana               36420.  0.00102 
+    ## 10 OH       44 Ohio                  44826.  0.000982
+    ## # ℹ 41 more rows
+
+``` r
+dennys <- dennys %>% 
+  mutate(establishment = "Denny's")
+
+laquinta <- laquinta %>% 
+  mutate(establishment = "La Quinta")
+```
+
+``` r
+dn_lq <- bind_rows(dennys, laquinta)
+```
+
+``` r
+ggplot(dn_lq, mapping = aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point()
+```
+
+![](lab-04_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+### Exercise 11
+
+Visualise North Carolina
+
+``` r
+dn_lq %>% 
+  filter(state == "NC") |> 
+  ggplot(aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point(alpha = 0.8) +
+  labs(
+    x = "Latitude",
+    y = "Longitude",
+    title = "Distribution of Denny's and Laquinta",
+    subtitle = "In North Carolina",
+    colour = "Establishment"
+  ) + 
+  theme_minimal()
+```
+
+![](lab-04_files/figure-gfm/north-carolina-1.png)<!-- -->
+
+### Exercise 12
+
+Visualise Texas
+
+``` r
+dn_lq %>% 
+  filter(state == "TX") |> 
+  ggplot(aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Latitude",
+    y = "Longitude",
+    title = "Distribution of Denny's and Laquinta",
+    subtitle = "In Texas",
+    colour = "Establishment"
+  ) + 
+  theme_minimal()
+```
+
+![](lab-04_files/figure-gfm/texas-1.png)<!-- -->
