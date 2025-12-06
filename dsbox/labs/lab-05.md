@@ -200,28 +200,59 @@ dn_lq_nc |>
 
 ![](lab-05_files/figure-gfm/minimum-distance-nc-1.png)<!-- -->
 
+### Exercise 10
+
 ``` r
-dn_lq_ak |> 
+dn_tx <- dennys |> 
+  filter(state == "TX")
+
+lq_tx <- laquinta |> 
+  filter(state == "TX")
+
+nrow(dn_tx)
+```
+
+    ## [1] 200
+
+``` r
+nrow(lq_tx)
+```
+
+    ## [1] 237
+
+``` r
+dn_lq_tx <- full_join(dn_tx, lq_tx, by = "state", relationship = "many-to-many") |> 
+  mutate(
+    distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y)
+    )
+
+dn_lq_tx_mindist <- dn_lq_tx |> 
+  group_by(address.x) |> 
+  summarise(nearest = min(distance))
+
+dn_lq_tx |> 
+  filter(distance %in% dn_lq_tx_mindist$nearest) |> 
+  select(address.x, starts_with("long"), starts_with("lat")) |> 
   rename(
     longitude_x = longitude.x,
     longitude_y = longitude.y,
     latitude_x = latitude.x,
     latitude_y = latitude.y
   ) |> 
-  select(address.x, starts_with("long"), starts_with("lati")) |> 
   pivot_longer(
-    cols = c(starts_with("long"), starts_with("lat")),
-    names_to = c(".value", "loca"),
+    cols = !address.x,
+    names_to = c(".value", "Establishment"),
     names_sep = "_"
   ) |> 
-  mutate(loca = if_else(loca == "x", "Dennys", "La Quinta")) |> 
-  ggplot(aes(x = latitude, y = longitude, colour = loca)) +
-  geom_point() +
+  mutate(Establishment = if_else(Establishment == "x", "Dennys", "La Quinta")) |> 
+  ggplot(aes(x = latitude, y = longitude, colour = Establishment)) +
+  geom_point(alpha = 0.5) +
   labs(
-    colour = "Establishment",
+    title = "Nearest Denny's and La Quinta",
+    subtitle = "In Texas",
     x = "Latitude",
     y = "Longitude"
   )
 ```
 
-![](lab-05_files/figure-gfm/minimum-distance-1.png)<!-- -->
+![](lab-05_files/figure-gfm/mini-distance-texas-1.png)<!-- -->
