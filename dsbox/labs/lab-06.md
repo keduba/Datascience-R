@@ -98,12 +98,16 @@ staff_long |>
   )
 ```
 
-![](lab-06_files/figure-gfm/original-plot-1.png)<!-- --> \### Exercise 2
+![](lab-06_files/figure-gfm/original-plot-1.png)<!-- -->
+
+### Exercise 2
 
 To highlight the proportion of the part-time faculty, we can do several
-things: - let it show by reordering it in the legend to align with the
-line plot. - give it a different colour from the others in the line
-plots
+things:
+
+- let it show by reordering it in the legend to align with the line
+  plot.
+- give it a different colour from the others in the line plots
 
 ### Exercise 3
 
