@@ -24,16 +24,16 @@ There are `r nrow(seattlepets)` pets in the dataset.
 
 ### Exercise 2
 
-Remove this text, and add your answer for Exercise 2 here.
+There are `r ncol(seattlepets)` columns in the dataset.
 
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 3 here.
 
 ```{r most-common-names}
 seattlepets %>%
   count(animal_name, sort = TRUE)
 ```
+The top three names are Lucy, Charlie and Luna.
 
 ### Exercise 4
 
