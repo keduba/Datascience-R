@@ -1,7 +1,7 @@
 ---
 title: "HW 01 - Pet names"
-author: "Insert your name here"
-date: "Insert date here"
+author: "hugo baba"
+date: "february 3, 2026"
 output: github_document
 ---
 
@@ -37,10 +37,24 @@ The top three names are Lucy, Charlie and Luna.
 
 ### Exercise 4
 
-Remove this text, and add your answer for Exercise 4 here.
 
 ```{r most-common-cat-dog-names}
-# remove this comment and add the code for Exercise 4 here
+seattlepets |> 
+  group_by(species) |> 
+  count(animal_name, sort = TRUE)
+```
+
+```{r}
+seattlepets |>
+  count(species, sort = TRUE)
+```
+
+```{r}
+seattlepets |>
+  group_by(species) |> 
+  count(animal_name, sort = TRUE) |>
+  slice_max(n, n = 5)
+  
 ```
 
 ### Exercise 5
