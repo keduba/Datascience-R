@@ -53,13 +53,33 @@ seattlepets |>
 seattlepets |>
   group_by(species) |> 
   count(animal_name, sort = TRUE) |>
-  slice_max(n, n = 5)
+    slice_max(n, n = 20) 
   
 ```
 
 ### Exercise 5
 
-Remove this text, and add your answer for Exercise 5 here.
+```{r cat-dog-name-plot}
+cats_n_dogs <- seattlepets |>
+  group_by(species) |> 
+  filter(species %in% c("Cat", "Dog")) |>
+  count(animal_name, sort = TRUE) |>
+  slice_max(n, n = 20)
+```
+
+```{r plot-cats-dogs}
+name_props <- cats_n_dogs |>
+  group_by(species) |> 
+  mutate(props = n / sum(n))
+
+ dogs_props <- name_props |>
+  filter(species == "Dog") |> 
+  rename(dog_prop = props)
+
+ cats_props <- name_props |>
+  filter(species == "Cat") |> 
+  rename(cat_prop = props)
+```
 
 ### Exercise 6
 
