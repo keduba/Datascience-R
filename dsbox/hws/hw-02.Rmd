@@ -1,0 +1,55 @@
+---
+title: "HW 01 - Airbnb listings in Edinburgh"
+author: "Kairo"
+date: "17/02/2026"
+output: github_document
+---
+
+## Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse)
+library(dsbox)
+```
+
+## Exercises
+
+### Exercise 1
+
+There are `r nrow(edibnb)` rows in the `edibnb` dataset.
+
+### Exercise 2
+
+Each row represents an observation of an apartment for rent on the Airbnb in Edinburgh, with the id, price, bathrooms, bed, reviews and other key features for someone considering to rent.
+
+### Exercise 3
+
+Remove this text, and add your answer for Exercise 3 here.
+
+```{r prices-neighbourhoods}
+# remove this comment and add the code for Exercise 3 here
+```
+
+### Exercise 4
+
+Remove this text, and add your answer for Exercise 4 here.
+
+```{r top-5-median}
+# remove this comment and add the code for Exercise 4 here
+```
+
+```{r top-5-median-plot}
+# remove this comment and add the code for Exercise 4 here
+```
+
+```{r top-5-median-summary-stats}
+# remove this comment and add the code for Exercise 4 here
+```
+
+### Exercise 5
+
+Remove this text, and add your answer for Exercise 5 here.
+
+```{r review-scores-rating}
+# remove this comment and add the code for Exercise 5 here
+```
