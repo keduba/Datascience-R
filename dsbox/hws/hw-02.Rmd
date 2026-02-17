@@ -24,10 +24,15 @@ Each row represents an observation of an apartment for rent on the Airbnb in Edi
 
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 3 here.
-
 ```{r prices-neighbourhoods}
-# remove this comment and add the code for Exercise 3 here
+# drop NA values
+edibnb_na <- edibnb |> 
+  drop_na()
+
+# Plot the rest in the histogram
+ggplot(edibnb_na, aes(price)) +
+  geom_histogram(binwidth = 40) +
+  facet_wrap(~ neighbourhood, ncol = 4)
 ```
 
 ### Exercise 4

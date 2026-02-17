@@ -1,0 +1,167 @@
+---
+title: "Lab 02 - Plastic waste"
+author: "Keduba"
+date: "03/12/2025"
+output: github_document
+---
+
+## Load packages and data
+
+```{r load-packages, message=FALSE}
+library(tidyverse) 
+```
+
+```{r load-data, message=FALSE}
+plastic_waste <- read_csv("data/plastic-waste.csv")
+```
+
+## Exercises
+
+View the distribution of the plastic waste per capita, using a histogram.
+
+```{r view-distro}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap)) +
+  geom_histogram(binwidth = 0.2)
+```
+```{r outlier}
+plastic_waste %>% 
+  filter(plastic_waste_per_cap > 3)
+```
+Quick question: Why would T&T have such a high rate of plastic waste per capita?
+
+### Exercise 1
+
+
+```{r plastic-waste-continent}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap)) +
+  geom_histogram(binwidth = 0.2) +
+  facet_wrap(~ continent)
+```
+```{r density-plot}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent)) +
+  geom_density()
+
+```
+
+```{r density-plot-fill}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent,
+                                 fill = continent)) +
+  geom_density()
+
+```
+### Exercise 2
+
+```{r plastic-waste-density-alpha}
+ggplot(data = plastic_waste, aes(x = plastic_waste_per_cap, 
+                                 color = continent,
+                                 fill = continent
+                                )) +
+  geom_density(alpha = 0.4)
+
+```
+
+
+### Exercise 3
+
+```{r plastic-waste-boxplot}
+ggplot(data = plastic_waste, 
+       mapping = aes(x = continent, 
+                     y = plastic_waste_per_cap)) +
+  geom_boxplot()
+```
+### Exercise 4
+
+With the violin plot, the spread of the data per continent is more visible.  This is not apparent with the box plots above. Although it's not very clear the data outside the iqr in the violin plots compared to the box plots.
+
+```{r plastic-waste-violin}
+ggplot(data = plastic_waste, 
+       mapping = aes(x = continent, 
+                     y = plastic_waste_per_cap)) +
+  geom_violin()
+```
+
+### Exercise 5
+
+```{r plastic-waste-mismanaged}
+ggplot(plastic_waste, mapping = aes(x = plastic_waste_per_cap, 
+                                    y = mismanaged_plastic_waste_per_cap)) +
+  geom_point()
+```
+There seems to be a linear relationship between plastic waste per capita and mismanaged plastic waste per capita with a few outliers. One of the outliers could be T&T observed earlier in the histogram.
+
+### Exercise 6
+
+
+```{r plastic-waste-mismanaged-continent}
+plastic_waste %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+ggplot(mapping = aes(x = mismanaged_plastic_waste_per_cap,
+                                           y = plastic_waste_per_cap,
+                                           colour = continent)) +
+  geom_point()
+```
+Europe has the smallest waste to mismanaged waste per capita ratio. Africa and South America have similar associations. Oceania follows a similar pattern as Africa.
+
+### Exercise 7
+
+
+```{r plastic-waste-population-total}
+plastic_waste %>% 
+ filter(plastic_waste_per_cap < 3, total_pop < 5e+08) %>%
+ggplot(aes(x = total_pop,
+           y = plastic_waste_per_cap,
+           colour = continent)) +
+  geom_point()
+```
+
+```{r plastic-waste-population-coastal}
+# plastic waste per cap vs coastal population
+ggplot(plastic_waste, aes(x = coastal_pop,
+                          y = plastic_waste_per_cap,
+                          colour = continent)) +
+  geom_point()
+```
+It appears that there is a stronger linear relationship between coastal population and the plastic waste per capita than between the total population and the same variable. Though we see that the population of Asia contributes to this relationship more than in North America.
+
+### Exercise 8
+
+```{r recreate-viz}
+plastic_waste %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+  mutate(coastal_pop_prop = coastal_pop/total_pop) %>% 
+  
+ggplot(plastic_waste, mapping = aes(x = coastal_pop_prop,
+                                    y = plastic_waste_per_cap,
+                                    )) +
+  geom_point(aes(colour = continent)) +
+  geom_smooth(method = "loess") +
+  labs(
+    title = "Plastic waste vs coastal population proportion",
+    subtitle = "by continent",
+    x = "Coastal population proportion (coastal/total population)",
+    y = "Plastic waste per capita"
+  )
+```
+
+Interpretation:
+The loess smooth line follows an increase trend that isn't exactly linear. There seems to be a proportional increase with the plastic waste per capita against the proportion of coastal residents to the total population.
+
+```{r}
+plastic_waste %>% 
+  mutate(coastal_total_prop = coastal_pop/total_pop) %>% 
+  filter(plastic_waste_per_cap < 3) %>% 
+  ggplot(mapping = aes(x = coastal_total_prop,
+                       y = plastic_waste_per_cap,
+                       colour = continent)) +
+  geom_point() +
+  geom_smooth(colour = "black") +
+  scale_colour_viridis_d() +
+  labs(
+    title = "Plastic waste vs coastal population proportion",
+    subtitle = "by continent",
+    x = "Coastal population proportion (coastal/total population)",
+    y = "Plastic waste per capita"
+  )
+```

@@ -1,0 +1,58 @@
+---
+title: "Nobel winners"
+author: "Mine Çetinkaya-Rundel"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| warning: false
+#| message: false
+
+library(tidyverse)
+```
+
+Let's first load the data:
+
+```{r}
+#| label: load-data
+#| eval: false
+
+nobel <- read_csv(file = "data/nobel.csv")
+```
+
+Then let's split the data into two:
+
+```{r}
+#| label: split-data
+#| eval: false
+
+stem_cat <- c("Physics", "Medicine", "Chemistry", "Economics")
+# stem laureates
+stem <- nobel %>%
+  filter(category %in% stem_cat) 
+
+stem_1 <- nobel %>%
+  filter(category == stem_cat)
+
+# non-steam laureates
+non_stem <- nobel %>%
+  filter(!(category %in% stem_cat ))
+
+#non_stem_1 <- nobel %>%
+ # filter(!category == stem_cat)
+
+```
+
+And finally write out the data:
+
+```{r}
+#| label: write-data
+
+write_csv(stem, file = "data/nobel_stem.csv")
+write_csv(stem_1, file = "data/nobel_stem_1.csv")
+write_csv(non_stem, file = "data/nobel_nonstem.csv")
+
+# add code for writing out the two data frames here
+```

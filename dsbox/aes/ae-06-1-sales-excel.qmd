@@ -1,0 +1,97 @@
+---
+title: "Sales"
+author: "Mine Çetinkaya-Rundel"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(readxl)
+```
+
+-   Read in the Excel file called `sales.xlsx` from the `data-raw/` folder such that it looks like the following.
+
+```{r}
+#| echo: false
+#| out-width: "20%"
+
+knitr::include_graphics("images/sales-1.png")
+```
+
+```{r}
+sales <- read_excel("data/sales.xlsx")
+```
+
+-   **Stretch goal:** Manipulate the sales data such such that it looks like the following.
+
+```{r}
+#| echo: false
+#| out-width: "25%"
+
+knitr::include_graphics("images/sales-2.png")
+```
+
+```{r}
+sales <- sales %>%
+  set_names(c("id", "n")) 
+```
+
+```{r}
+brand <- sales %>% 
+  select(id) %>% 
+  filter(str_detect(id, "Brand "))
+
+newsales %>% 
+  mutate(
+    ix = row_number(),
+    brand = if_else(ix < 5, "Brand 1", "Brand 2")) %>% 
+  filter(!str_detect(id, "Brand")) %>% 
+  relocate(brand) %>% 
+  select(-ix)
+
+```
+
+```{r}
+# 
+
+brand_vec <- sales %>%
+  filter(str_detect(id, "Brand")) %>% 
+  select(id) %>% 
+  pull()
+
+gh <- which(sales$n == "n")
+
+# brand_vec <- rep(brand_vec, diff(c(gh, nrow(sales)+1)))
+
+sales_clean <- sales %>% 
+  drop_na() %>% 
+  mutate(
+    brand = rep(brand_vec, diff(c(gh, nrow(sales)+1)))
+  ) %>% 
+  relocate(brand) %>% 
+  filter(!str_detect(id, "Brand"))
+
+# jf <- c(which(str_detect(sales$id, "Brand")), nrow(sales))
+```
+
+```{r}
+
+bv <- sales %>%
+  filter(str_detect(id, "Brand")) %>% 
+  select(id)
+
+gh <- diff(c(which(sales$n == "n"), nrow(sales)+1))
+
+sales %>% 
+  drop_na() %>% 
+  mutate(
+    brand = rep(bv$id, gh)
+  ) %>% 
+  relocate(brand) %>% 
+  filter(!str_detect(id, "Brand"))
+```

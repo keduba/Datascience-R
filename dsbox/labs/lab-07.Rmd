@@ -1,0 +1,98 @@
+---
+title: "Lab 07 - Simpson's paradox"
+author: "Kedman"
+date: "7/12/2025"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse) 
+library(mosaicData) 
+```
+
+### Exercise 1
+The study is an observational study and not an experiment. There was no attempt to control for the outcome which is something that one would find in an experiment.
+
+### Exercise 2
+
+There are 1314 observations across three variables. Each observation is a participant in the study. 
+
+### Exercise 3
+
+The three variables are the outcome, the age at the time of the first study and the smoker status of the participant.
+
+The outcome is a factor (character type), age is a number (integer) and smoker is a factor (char) with two levels yes and no.
+
+```{r visualise-outcome}
+ggplot(Whickham, mapping = aes(y = outcome)) +
+  geom_bar() 
+```
+
+```{r viz-smoker}
+ggplot(Whickham, aes(smoker)) + 
+  geom_bar()
+
+```
+
+```{r viz-age}
+Whickham |> 
+  ggplot(aes(age)) +
+  geom_histogram(bins = 40)
+```
+
+```{r bar-smoker-outcome}
+ggplot(Whickham, mapping = aes(y = outcome, fill = smoker)) +
+  geom_bar(position = "dodge") 
+```
+
+### Exercise 4
+
+For the relationship between smoking status and health outcome, one would expect the probabilities of being alive to decrease with the increase in smoking.
+
+### Exercise 5
+
+```{r vis-smoke-outcome}
+Whickham |> 
+  count(outcome, smoker)
+```
+
+```{r}
+Whickham |> 
+  count(smoker, outcome)
+```
+
+### Exercise 6
+
+```{r cont-table}
+whickham <- Whickham |> 
+  mutate(
+    age_cat = case_when(age <= 44 ~ "18-44",
+                    age > 44 & age <= 64 ~ "45-64",
+                    age > 64 ~ "65+"
+                    )
+  )
+
+```
+
+```{r}
+whickham
+```
+
+### Exercise 7
+
+```{r}
+whickham |> 
+  count(smoker, age_cat, outcome)
+
+```
+
+```{r}
+whickham |> 
+  ggplot(aes(outcome, fill = smoker)) +
+  geom_bar(position = "dodge") +
+  facet_grid(cols = vars(age_cat)) # facet_grid(~ age_cat)
+
+```
+

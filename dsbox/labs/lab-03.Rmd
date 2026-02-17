@@ -1,0 +1,120 @@
+---
+title: "Lab 03 - Nobel laureates"
+author: "Kedman"
+date: "3/12/2025"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message=FALSE}
+library(tidyverse) 
+```
+
+```{r load-data, message=FALSE}
+nobel <- read_csv("../data/nobel.csv")
+```
+
+## Exercises
+
+### Exercise 1
+
+```{r glimpse-nobel}
+glimpse(nobel)
+c(nrow(nobel), ncol(nobel))
+```
+
+### Exercise 2
+
+All the living nobel laureates. Their country is known, the gender is not "org" and they're still alive.
+```{r living}
+nobel_living <- nobel %>% 
+  filter(country != "NA", gender != "org", is.na(died_date)) 
+```
+
+
+What laureates were in US at the time of their award.
+```{r country-us}
+nobel_living$country %>% unique()
+
+# method 1
+nobel_living <- nobel_living %>% 
+  mutate(country_us = fct_other(country, "USA"))
+
+# method 2
+nobel_living <- nobel_living %>% 
+  mutate(
+    country_us = if_else(country == "USA", "USA", "Other")
+  )
+```
+
+Extract the science-based laureates
+
+```{r sci-nobel}
+scifields <- c("Physics", "Chemistry", "Economics", "Medicine")
+nobel_living_sci <- nobel_living %>% 
+  filter(category %in% scifields)
+```
+
+### Exercise 3
+- a bar plot to see the relationship between prize category and country at time of award.
+- facet by category.
+- horizontal bars
+
+```{r country-bar}
+ggplot(data = nobel_living_sci, mapping = aes(y = country_us, 
+                                              fill = country_us)) +
+  geom_bar() +
+  facet_wrap(~ category) +
+  labs(
+    x = "Number of Laureates",
+    y = "Country at time of award",
+  ) +
+  guides(fill = "none")
+```
+
+### Exercise 4
+
+- Laureates born in the US vs other countries
+
+```{r}
+nobel_living_sci <- nobel_living_sci %>% 
+  mutate(born_country_us = fct_other(born_country, "USA"))
+nobel_living_sci %>% 
+  filter(born_country_us == "USA") %>% 
+  count()
+```
+105 awardees were born in the US out of 228.
+
+### Exercise 5
+
+Those who won while in the USA and who were born in the USA.
+```{r born-won-usa}
+ggplot(data = nobel_living_sci, mapping = aes(y = country_us, 
+                                              fill = born_country_us)) +
+  geom_bar() +
+  facet_wrap(~ category) +
+  labs(
+    x = "Number of Laureates",
+    y = "Country at time of award",
+    #color = "Country of birth"
+  ) +
+  guides(fill = guide_legend(title = "Birth country")) +
+  theme_minimal()
+```
+It does appear that of the number of awardees in the USA, more were born in the USA than were immigrants.
+
+### Exercise 6
+
+- where were those immigrant laureates born?
+```{r immigrant-birth-country}
+nobel_living_sci %>% 
+  filter(country_us == "USA", born_country_us == "Other") %>% 
+  count(born_country) %>% 
+  arrange(desc(n))
+```
+```{r immigrant-birth-country-2}
+nobel_living_sci %>% 
+  filter(country_us == "USA", born_country_us == "Other") %>% 
+  count(born_country, sort = TRUE)
+```

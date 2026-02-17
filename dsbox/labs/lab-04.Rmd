@@ -1,0 +1,176 @@
+---
+title: "Lab 04 - La Quinta is Spanish for next to Denny's, Pt. 1"
+author: "Kedman"
+date: "4/12/2025"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse) 
+library(dsbox)
+```
+
+```{r load-data, message = FALSE}
+states <- read_csv("data/states.csv")
+```
+
+### Exercise 1
+```{r dim-states}
+glimpse(states)
+c(nrow(states), ncol(states))
+dim(states)
+```
+
+1. The number of rows is `r nrow(states)` and the number of columns is `r ncol(states)`.
+2. The dimension is `r dim_desc(states)`
+3. The names of the columns or variables are `r colnames(states)`.
+4. Each row represents a US state with its code and area in square miles.
+
+
+### Exercise 2
+1. The dimensions of La Quinta is `r dim_desc(laquinta)`.
+2. Each row represents the address of a La Quinta including its geographical coordinates. 
+3. The columns or variables are `r colnames(laquinta)`.
+
+
+### Exercise 3
+La Quinta is also found in Canada, Mexico, China, Colombia, Ecuador, United Arab Emirates, Georgia, Turkiye and New Zealand.
+
+```{r location-laquinta}
+glimpse(laquinta)
+```
+
+
+
+### Exercise 4
+To use the data to find out if there are non-USA locations of La Quinta, we can combine this data with the data on US states. By cross-reference of the state code, we could identify locations that are not part of the US states as non-US locations.
+
+
+### Exercise 5
+
+```{r denny-outside-us}
+dennys %>% 
+  filter(!(state %in% states$abbreviation))
+```
+
+### Exercise 6
+
+```{r dennys-us}
+dennys <- dennys %>% 
+  mutate(country = "United States")
+
+```
+
+### Exercise 7
+La Quinta is also found in Canada, Mexico, China, Colombia, Ecuador, United Arab Emirates, Georgia, Turkiye and New Zealand.
+
+### Exercise 8
+
+What countries are La Quinta's offices?
+
+```{r}
+laquinta <- laquinta %>% 
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT" ~ "Colombia",
+    state %in% c("VE", "PU", "AG", "CH", "QR", "NL", "SL") ~ "Mexico" 
+    )
+  )
+```
+
+To work with only La Quinta USA
+```{r}
+laquinta <- laquinta %>% 
+  filter(country == "United States")
+```
+
+### Exercise 9
+
+```{r denny-us-state}
+state_freq <- dennys %>% 
+  count(state, sort = TRUE)
+```
+
+The biggest state is `r head(state_freq, 1)` and the least state is `r tail(state_freq, 1)`.
+
+```{r laquin-us}
+laquinta %>% 
+  count(state, sort = TRUE) %>% 
+  head(5)
+```
+```{r}
+head(state_freq)
+```
+
+```{r laquin-us-last}
+laquinta %>% 
+  count(state, sort = TRUE) %>% 
+  tail(10)
+```
+```{r}
+tail(state_freq, 10)
+```
+
+### Exercise 10
+```{r most-per-sq-miles}
+dennys %>% 
+  count(state) %>% 
+  inner_join(states, by = c("state" = "abbreviation")) %>% 
+  mutate(density = n/area) %>% 
+  arrange(desc(density))
+```
+
+```{r}
+dennys <- dennys %>% 
+  mutate(establishment = "Denny's")
+
+laquinta <- laquinta %>% 
+  mutate(establishment = "La Quinta")
+```
+
+```{r}
+dn_lq <- bind_rows(dennys, laquinta)
+```
+
+```{r}
+ggplot(dn_lq, mapping = aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point()
+```
+
+### Exercise 11
+Visualise North Carolina
+```{r north-carolina}
+dn_lq %>% 
+  filter(state == "NC") |> 
+  ggplot(aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point(alpha = 0.8) +
+  labs(
+    x = "Latitude",
+    y = "Longitude",
+    title = "Distribution of Denny's and Laquinta",
+    subtitle = "In North Carolina",
+    colour = "Establishment"
+  ) + 
+  theme_minimal()
+```
+
+### Exercise 12
+Visualise Texas
+
+```{r texas}
+dn_lq %>% 
+  filter(state == "TX") |> 
+  ggplot(aes(x = latitude, y = longitude, colour = establishment)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Latitude",
+    y = "Longitude",
+    title = "Distribution of Denny's and Laquinta",
+    subtitle = "In Texas",
+    colour = "Establishment"
+  ) + 
+  theme_minimal()
+```

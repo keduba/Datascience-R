@@ -1,0 +1,142 @@
+---
+title: "Lab 06 - Sad plots"
+author: "KEdman"
+date: "7/12/2025"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse) 
+library(dsbox) 
+library(scales)
+```
+
+```{r}
+staff <- read_csv("data/instructional-staff.csv")
+spec(staff)
+staff
+```
+```{r}
+staff_long <- staff |> 
+  pivot_longer(
+    cols = !faculty_type,
+    names_to = "year"
+  ) |> 
+  mutate(year = as.numeric(year))
+
+staff_long
+```
+### Exercise 1
+```{r original-plot}
+staff_long |> 
+  ggplot(aes(year, value, colour = faculty_type)) +
+  geom_line() +
+  labs(
+    x = "Year",
+    y = "Score",
+    colour = "Faculty",
+    title = "Faculty composition 1975 to 2011",
+    subtitle = "Everyone else and the part-time staff",
+    caption = "Evolution of part-time faculty"
+  )
+```
+
+### Exercise 2
+
+To highlight the proportion of the part-time faculty, we can do several things:
+
+- let it show by reordering it in the legend to align with the line plot.
+- give it a different colour from the others in the line plots
+
+
+### Exercise 3
+```{r fix-plot-above}
+staff_long |> 
+  ggplot(aes(year, value, group = faculty_type, colour = faculty_type)) +
+  geom_line() +
+  scale_color_manual(values = c(rep("gray", 4), "blue")) +
+  labs(
+    x = "Year",
+    y = "Score"
+  )
+```
+
+```{r reorder-one-colour}
+staff_long |> 
+  ggplot(aes(year, value, group = faculty_type,
+             colour = fct_reorder2(faculty_type, year, value))) +
+  geom_line() +
+  scale_color_manual(values = c("blue", rep("gray", 4))) +
+  labs(
+    x = "Year",
+    y = "Score",
+    colour = "Faculty",
+    title = "Faculty composition 1975 to 2011",
+    subtitle = "Everyone else and the part-time staff",
+    caption = "Evolution of part-time faculty"
+  ) +
+  guides(colour = "none")
+```
+
+
+```{r reorder-all}
+staff_long |> 
+  ggplot(aes(year, value, group = faculty_type,
+             colour = fct_reorder2(faculty_type, year, value))
+         ) +
+  geom_line() +
+  labs(
+    x = "Year",
+    y = "Score",
+    colour = "Faculty",
+    title = "Faculty composition 1975 to 2011",
+    subtitle = "Everyone else and the part-time staff",
+    caption = "Evolution of part-time faculty"
+  )
+  
+```
+
+### Exercise 4
+
+```{r}
+fisheries <- read_csv("data/fisheries.csv")
+fisheries
+```
+```{r}
+fisheries |> 
+  arrange(desc(total)) |> 
+  summarise(md = median(total),
+            mn = mean(total),
+            mx = max(total),
+            mnn = min(total))
+```
+Possible plots:
+- histogram
+- remove below a threshold
+- bar chart for top X countries
+
+```{r}
+fisheries |> 
+  filter(total > mean(total)) |> 
+  ggplot(aes(x = total)) +
+  geom_histogram(bins = 50)
+
+```
+```{r}
+fisheries |> 
+  filter(total > mean(total) & total < max(total)) |> 
+  ggplot(aes(x = total, y = fct_reorder(country, total))) +
+  geom_col() +
+  labs(
+    title = "Global Total Fisheries 2005",
+    x = "Total (tons)",
+    y = "Countries",
+    caption = "Source: Wikipedia"
+  ) +
+  scale_x_continuous(labels = label_number())#scale_cut = cut_short_scale()))
+
+```
+
+

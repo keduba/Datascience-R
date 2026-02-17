@@ -1,0 +1,247 @@
+---
+title: "Lab 04 - La Quinta is Spanish for next to Denny's, Pt. 2"
+author: "Kedman"
+date: "6/12/2025"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message = FALSE}
+library(tidyverse) 
+library(dsbox) 
+```
+
+```{r load-data, message = FALSE}
+states <- read_csv("data/states.csv")
+```
+
+### Exercise 1
+
+```{r dennys-alaska}
+dn_ak <- dennys |> 
+  filter(state == "AK")
+nrow(dn_ak)
+
+```
+
+### Exercise 2
+
+```{r laquinta-alaska}
+lq_ak <- laquinta |> 
+  filter(state == "AK")
+nrow(lq_ak)
+```
+
+### Exercise 3
+
+```{r pairings-dn-lq}
+dn_lq_ak <- full_join(dn_ak, lq_ak, by = "state")
+```
+```{r}
+dn_lq_ak
+```
+### Exercise 4
+
+There are 6 observations in the new data frame.
+
+The names of the variables are: `r colnames(dn_lq_ak)`.
+
+### Exercise 5
+
+```{r}
+haversine <- function(long1, lat1, long2, lat2, round = 3) {
+  # convert to radians
+  long1 = long1 * pi / 180
+  lat1  = lat1  * pi / 180
+  long2 = long2 * pi / 180
+  lat2  = lat2  * pi / 180
+  
+  R = 6371 # Earth mean radius in km
+  
+  a = sin((lat2 - lat1)/2)^2 + cos(lat1) * cos(lat2) * sin((long2 - long1)/2)^2
+  d = R * 2 * asin(sqrt(a))
+  
+  return( round(d,round) ) # distance in km
+}
+```
+
+To add a variable to a data frame while keeping the existing variables, we use the `mutate` function from the tidyverse.
+
+### Exercise 6
+```{r distance-denny-laq}
+dn_lq_ak <- dn_lq_ak |> 
+  mutate(distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y))
+```
+
+
+### Exercise 7
+
+```{r minimum-distance-den-laq}
+dn_lq_ak_mindist <- dn_lq_ak |> 
+  group_by(address.x) |> 
+  summarise(nearest = min(distance))
+
+```
+
+### Exercise 8
+describe the distribution of the distances between Dennys and the nearest La Quinta in Alaska.
+```{r minimum-distance-ak}
+dn_lq_ak |> 
+  filter(distance %in% dn_lq_ak_mindist$nearest) |> 
+  select(address.x, starts_with("long"), starts_with("lat")) |> 
+  rename(
+    longitude_x = longitude.x,
+    longitude_y = longitude.y,
+    latitude_x = latitude.x,
+    latitude_y = latitude.y
+  ) |> 
+  pivot_longer(
+    cols = !address.x,
+    names_to = c(".value", "Establishment"),
+    names_sep = "_"
+  ) |> 
+  mutate(Establishment = if_else(Establishment == "x", "Dennys", "La Quinta")) |> 
+  ggplot(aes(x = latitude, y = longitude, colour = Establishment)) +
+  geom_point() +
+  labs(
+    title = "Nearest Denny's and La Quinta",
+    subtitle = "In Alaska",
+    x = "Latitude",
+    y = "Longitude"
+  )
+```
+
+### Exercise 9
+```{r north-carolina}
+dn_nc <- dennys |> 
+  filter(state == "NC")
+
+lq_nc <- laquinta |> 
+  filter(state == "NC")
+
+nrow(dn_nc)
+nrow(lq_nc)
+```
+
+```{r join-dn-lq-nc}
+dn_lq_nc <- full_join(dn_nc, lq_nc, by = "state", relationship = "many-to-many")
+```
+
+```{r distance-nc}
+dn_lq_nc <- dn_lq_nc |> 
+  mutate(distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y))
+```
+
+```{r minimum-distance-nc}
+dn_lq_nc_mindist <- dn_lq_nc |> 
+  group_by(address.x) |> 
+  summarise(nearest = min(distance))
+
+dn_lq_nc |> 
+  filter(distance %in% dn_lq_nc_mindist$nearest) |> 
+  select(address.x, starts_with("long"), starts_with("lat")) |> 
+  rename(
+    longitude_x = longitude.x,
+    longitude_y = longitude.y,
+    latitude_x = latitude.x,
+    latitude_y = latitude.y
+  ) |> 
+  pivot_longer(
+    cols = !address.x,
+    names_to = c(".value", "Establishment"),
+    names_sep = "_"
+  ) |> 
+  mutate(Establishment = if_else(Establishment == "x", "Dennys", "La Quinta")) |> 
+  ggplot(aes(x = latitude, y = longitude, colour = Establishment)) +
+  geom_point() +
+  labs(
+    title = "Nearest Denny's and La Quinta",
+    subtitle = "In North Carolina",
+    x = "Latitude",
+    y = "Longitude"
+  )
+```
+
+### Exercise 10
+
+```{r texas}
+dn_tx <- dennys |> 
+  filter(state == "TX")
+
+lq_tx <- laquinta |> 
+  filter(state == "TX")
+
+nrow(dn_tx)
+nrow(lq_tx)
+```
+
+```{r mini-distance-texas}
+dn_lq_tx <- full_join(dn_tx, lq_tx, by = "state", relationship = "many-to-many") |> 
+  mutate(
+    distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y)
+    )
+
+dn_lq_tx_mindist <- dn_lq_tx |> 
+  group_by(address.x) |> 
+  summarise(nearest = min(distance))
+
+dn_lq_tx |> 
+  filter(distance %in% dn_lq_tx_mindist$nearest) |> 
+  select(address.x, starts_with("long"), starts_with("lat")) |> 
+  rename(
+    longitude_x = longitude.x,
+    longitude_y = longitude.y,
+    latitude_x = latitude.x,
+    latitude_y = latitude.y
+  ) |> 
+  pivot_longer(
+    cols = !address.x,
+    names_to = c(".value", "Establishment"),
+    names_sep = "_"
+  ) |> 
+  mutate(Establishment = if_else(Establishment == "x", "Dennys", "La Quinta")) |> 
+  ggplot(aes(x = latitude, y = longitude, colour = Establishment)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    title = "Nearest Denny's and La Quinta",
+    subtitle = "In Texas",
+    x = "Latitude",
+    y = "Longitude"
+  )
+```
+```{r mini-distance-texas}
+dn_lq_tx <- full_join(dn_tx, lq_tx, by = "state", relationship = "many-to-many") |> 
+  mutate(
+    distance = haversine(longitude.x, latitude.x, longitude.y, latitude.y)
+    )
+
+dn_lq_tx_mindist <- dn_lq_tx |> 
+  group_by(address.x) |> 
+  summarise(nearest = min(distance))
+
+dn_lq_tx |> 
+  filter(distance %in% dn_lq_tx_mindist$nearest) |> 
+  select(address.x, starts_with("long"), starts_with("lat")) |> 
+  rename(
+    longitude_x = longitude.x,
+    longitude_y = longitude.y,
+    latitude_x = latitude.x,
+    latitude_y = latitude.y
+  ) |> 
+  pivot_longer(
+    cols = !address.x,
+    names_to = c(".value", "Establishment"),
+    names_sep = "_"
+  ) |> 
+  mutate(Establishment = if_else(Establishment == "x", "Dennys", "La Quinta")) |> 
+  ggplot(aes(x = latitude, y = longitude,
+             colour = Establishment, alpha = Establishment )) +
+  geom_point() +
+  labs(
+    title = "Nearest Denny's and La Quinta",
+    subtitle = "In Texas",
+    x = "Latitude",
+    y = "Longitude"
+  )
+```
