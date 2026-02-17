@@ -10,6 +10,7 @@ output: github_document
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(dsbox)
+library(ggridges)
 ```
 
 ## Exercises
@@ -37,24 +38,68 @@ ggplot(edibnb_na, aes(price)) +
 
 ### Exercise 4
 
-Remove this text, and add your answer for Exercise 4 here.
-
 ```{r top-5-median}
-# remove this comment and add the code for Exercise 4 here
+edibnb |> 
+  select(neighbourhood, price) |> 
+  filter(!is.na(price)) |> 
+  group_by(neighbourhood) |> 
+  summarise(med = median(price)) |>
+  arrange(desc(med)) |>
+  slice(1:5)
+```
+
+```{r }
+top_neighbourhood <- edibnb_na |> 
+  select(neighbourhood, price) |> 
+  # filter(!is.na(price)) |> 
+  group_by(neighbourhood) |> 
+  summarise(med = median(price)) |> 
+  arrange(desc(med)) |>
+  slice(1:5) |> 
+  ungroup() |> 
+  select(neighbourhood)
 ```
 
 ```{r top-5-median-plot}
-# remove this comment and add the code for Exercise 4 here
+edibnb |> 
+  filter(neighbourhood %in% top_neighbourhood$neighbourhood) |> 
+  ggplot(aes(y = neighbourhood, x = price, fill = neighbourhood)) +
+  geom_density_ridges(alpha = 0.7)
 ```
 
 ```{r top-5-median-summary-stats}
-# remove this comment and add the code for Exercise 4 here
+edibnb |> 
+  filter(neighbourhood %in% top_neighbourhood$neighbourhood) |>
+  filter(!is.na(price)) |> 
+  group_by(neighbourhood) |> 
+  summarise(mini = min(price),
+            maxi = max(price),
+            means = mean(price),
+            med = median(price),
+            sdv = sd(price),
+            iqr = IQR(price))
+
 ```
+Explanation:
+The mean prices for each of the top five neighbourhoods is higher than the median value, suggesting of course that they are influenced by the maximum price in each neighbourhood. The New Town and Old Town both have the highest distribution of high prices followed by West End as observed from the means, even though the maximum are the same. 
+
 
 ### Exercise 5
 
-Remove this text, and add your answer for Exercise 5 here.
-
 ```{r review-scores-rating}
-# remove this comment and add the code for Exercise 5 here
+edibnb |> 
+  group_by(neighbourhood) |> 
+  select(neighbourhood, review_scores_rating) |> 
+  drop_na() |> 
+  ggplot(aes(review_scores_rating, neighbourhood, fill = neighbourhood)) +
+  geom_density_ridges(alpha = 0.8)
 ```
+```{r}
+edibnb |> 
+  group_by(neighbourhood) |> 
+  select(neighbourhood, review_scores_rating) |> 
+  drop_na() |> 
+  ggplot(aes(y = neighbourhood)) +
+  geom_bar(alpha = 0.8)
+```
+
